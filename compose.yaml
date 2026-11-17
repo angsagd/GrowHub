@@ -23,21 +23,23 @@ services:
       db:
         condition: service_healthy
     environment:
-      # Written into backend/.env on every start (see docker/backend/entrypoint.sh)
-      DOCKER_ENV_KEYS: APP_URL DB_CONNECTION DB_HOST DB_PORT DB_DATABASE DB_USERNAME DB_PASSWORD MAIL_MAILER MAIL_HOST MAIL_PORT MAIL_USERNAME MAIL_PASSWORD MAIL_SCHEME
-      APP_URL: http://localhost:${BACKEND_PORT:-8001}
-      DB_CONNECTION: pgsql
-      DB_HOST: db
-      DB_PORT: 5432
-      DB_DATABASE: growhub
-      DB_USERNAME: growhub
-      DB_PASSWORD: growhub
-      MAIL_MAILER: smtp
-      MAIL_HOST: mailpit
-      MAIL_PORT: 1025
-      MAIL_USERNAME: "null"
-      MAIL_PASSWORD: "null"
-      MAIL_SCHEME: "null"
+      # DOTENV_<KEY> values are written into backend/.env as <KEY> on every start
+      # (see docker/backend/entrypoint.sh). They are prefixed so they do not leak
+      # into the process env, where they would override phpunit.xml and make
+      # tests run against the dev database.
+      DOTENV_APP_URL: http://localhost:${BACKEND_PORT:-8001}
+      DOTENV_DB_CONNECTION: pgsql
+      DOTENV_DB_HOST: db
+      DOTENV_DB_PORT: 5432
+      DOTENV_DB_DATABASE: growhub
+      DOTENV_DB_USERNAME: growhub
+      DOTENV_DB_PASSWORD: growhub
+      DOTENV_MAIL_MAILER: smtp
+      DOTENV_MAIL_HOST: mailpit
+      DOTENV_MAIL_PORT: 1025
+      DOTENV_MAIL_USERNAME: "null"
+      DOTENV_MAIL_PASSWORD: "null"
+      DOTENV_MAIL_SCHEME: "null"
     ports:
       - "${BACKEND_PORT:-8001}:8001"
     volumes:

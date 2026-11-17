@@ -5,9 +5,9 @@ cd /var/www/html
 [ -f .env ] || cp .env.example .env
 
 # `artisan serve` lets backend/.env win over container env vars, so write the
-# Docker-specific settings from compose.yaml into .env on every start.
-for key in $DOCKER_ENV_KEYS; do
-    value=$(printenv "$key" || true)
+# Docker-specific settings (DOTENV_<KEY> in compose.yaml) into .env on every start.
+for key in $(env | sed -n 's/^DOTENV_\([A-Z0-9_]*\)=.*/\1/p'); do
+    value=$(printenv "DOTENV_$key" || true)
     escaped=$(printf '%s' "$value" | sed 's/[&|\\]/\\&/g')
     if grep -qE "^#? ?${key}=" .env; then
         sed -i -E "s|^#? ?${key}=.*|${key}=${escaped}|" .env
