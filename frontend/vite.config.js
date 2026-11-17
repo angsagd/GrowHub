@@ -39,6 +39,8 @@ export default defineConfig(({ mode }) => {
     },
     server: {
       port: 5174,
+      // Bind-mounted files on Windows/macOS Docker do not emit change events
+      watch: env.VITE_USE_POLLING === 'true' ? { usePolling: true, interval: 300 } : undefined,
       proxy: {
         '/api': createBackendProxy(backendTarget),
         '/storage': createBackendProxy(backendTarget),
