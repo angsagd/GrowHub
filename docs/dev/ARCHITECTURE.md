@@ -6,7 +6,7 @@
 | Document version | 1.0 (draft for architecture review) |
 | Document date | 19 November 2026 |
 | Document status | Awaiting product owner and technical lead approval |
-| Sources | [BRD v3.1](BRD.md), [Use Case Specification v1.1](USE_CASES.md), [SRS v1.1](SRS.md) |
+| Sources | [BRD v3.1](BRD.md), [Use Case Specification v1.1](USE_CASES.md), [SRS v1.2](SRS.md) |
 
 ## How to read this document
 

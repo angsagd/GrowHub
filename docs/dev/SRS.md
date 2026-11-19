@@ -3,7 +3,7 @@
 | Item | Detail |
 | :--- | :--- |
 | Product | GrowHub, a configurable knowledge-sharing and gamification platform for organisations |
-| Document version | 1.1 (draft for product owner review) |
+| Document version | 1.2 (draft for product owner review) |
 | Document date | 19 November 2026 |
 | Document status | Awaiting product owner approval |
 | Sources | [BRD v3.1](BRD.md), [Use Case Specification and User Stories v1.1](USE_CASES.md) |
@@ -262,7 +262,7 @@ Each table lists the requirement, its source, and its verification method. Value
 | FR-CNT-08 | Only the author shall be able to edit an item, and only in Draft or Rejected status. An item in Pending status shall be withdrawn to Draft before editing. | RUL-17, BR-15 | T |
 | FR-CNT-09 | A Rejected item shall show the latest rejection note to its author. | BR-15 | T |
 | FR-CNT-10 | Only the author or an administrator shall be able to remove an item. Removal by an administrator shall require a reason of 1–1,000 characters. | RUL-18, BR-24 | T |
-| FR-CNT-11 | A removed item shall be hidden from everyone, including its comments, attachments, likes, saves, and shares. It shall be kept for audit and deleted according to SET-14. | BR-16, BR-24 | T |
+| FR-CNT-11 | A removed item shall be hidden from everyone, including its comments, attachments, likes, saves, and shares. It shall be kept for 12 months after removal and then deleted permanently, together with its comments, attachments, and files. Point transactions and audit records that refer to it are kept. | BR-16, BR-24 | T |
 | FR-CNT-12 | Points already awarded for an item shall not be reversed when the item is removed. | UC-15 | T |
 | FR-CNT-13 | Drafts shall be visible only to their author. Pending and Rejected items shall be visible only to their author, reviewers, and administrators. | BR-17 | T |
 | FR-CNT-14 | My Contributions shall list the author's items with status, dates, and counts of views, likes, comments, saves, and shares, filterable by status. | BR-14, UC-16 | T |
@@ -443,8 +443,8 @@ Each table lists the requirement, its source, and its verification method. Value
 | FR-DPR-01 | Administrators shall be able to export a user's personal data, including profile, content list, comments, reading history, point history, violations, acknowledgements, and tickets, as a downloadable file. | CMP-07, UC-45 | T |
 | FR-DPR-02 | Administrators shall be able to anonymise a deactivated user. Anonymisation shall replace name, email, and photo with neutral values, keep the employee ID only as a one-way reference, and keep retained content attributed to "Former employee". | CMP-07 | T |
 | FR-DPR-03 | The system shall refuse to anonymise an active user. | UC-45 | T |
-| FR-DPR-04 | A daily task shall delete reading history, notifications, violation records, and audit records older than their SET-14 periods. | CMP-02 | T |
-| FR-DPR-05 | When SET-14 is set to remove departed employees' content, deactivating a user shall remove their published items after confirmation by the administrator. | BR-63, CMP-02 | T |
+| FR-DPR-04 | A daily task shall delete reading history, notifications, violation records, and audit records older than their SET-14 periods, and removed content past the periods in FR-CNT-11 and FR-DPR-05. | CMP-02 | T |
+| FR-DPR-05 | When SET-14 is set to remove departed employees' content, deactivating a user shall remove their published items after confirmation by the administrator. Those items shall be deleted permanently 30 days after removal, so that a mistaken deactivation can be reversed within that period. | BR-63, CMP-02 | T |
 
 ### 3.26 Scheduled tasks (FR-JOB)
 
