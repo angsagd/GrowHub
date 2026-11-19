@@ -1,72 +1,67 @@
 # GrowHub
 
-- `backend/` — Laravel API (PHP 8.4)
-- `frontend/` — Vue + Vite web app
-- `grow_hub_apk/` — Flutter mobile app (not containerised; run it with the Flutter SDK)
+GrowHub is an internal knowledge-sharing and gamification platform. Employees share knowledge, complete learning modules, join communities, and earn points, levels, and leaderboard rankings.
 
-## Local development with Docker
+## Project structure
 
-Requires Docker Desktop (or Docker Engine + Compose v2).
+| Path | Description |
+| --- | --- |
+| `backend/` | Laravel REST API (PHP 8.4, PostgreSQL) |
+| `frontend/` | Vue 3 + Vite web app |
+| `grow_hub_apk/` | Flutter mobile app |
+| `e2e/` | Playwright end-to-end tests |
+| `docker/` | Docker configuration for local development |
+| `docs/` | Project documentation |
+
+## Getting started
+
+Requires Docker Desktop, or Docker Engine with Compose v2.
 
 ```bash
 docker compose up -d --build
-docker compose logs -f backend   # first boot runs composer install, migrations and seeding
 ```
 
-| Service  | URL                          | Notes                                   |
-|----------|------------------------------|-----------------------------------------|
-| Frontend | http://localhost:5174        | Vite dev server, proxies `/api` and `/storage` to the backend |
-| Backend  | http://localhost:8001        | `php artisan serve`                     |
-| Postgres | `localhost:5432`             | db/user/password: `growhub`             |
-| Mailpit  | http://localhost:8025        | Catches all outgoing mail (e.g. OTPs)   |
+The first start installs dependencies, runs migrations, and seeds the database.
 
-Seeded employee accounts log in with their NIP as both username and password.
+| Service | URL |
+| --- | --- |
+| Web app | http://localhost:5174 |
+| API | http://localhost:8001 |
+| Mailpit (local email inbox) | http://localhost:8025 |
+| PostgreSQL | `localhost:5432` (database, user, and password: `growhub`) |
 
-Override host ports with `FRONTEND_PORT`, `BACKEND_PORT`, `DB_FORWARD_PORT` or `MAILPIT_PORT`
-(e.g. in a root `.env` file) if they clash with something already running.
+Seeded accounts use their NIP as both username and password. For example, the local admin account is `1000000001`.
 
-### What happens on backend start
-
-`docker/backend/entrypoint.sh` creates `backend/.env` from `.env.example` if missing, writes the
-Docker DB/mail settings into it, installs Composer deps, generates `APP_KEY`, runs migrations,
-seeds the database **only if it has no users**, and links storage. Your data survives restarts.
-
-### Common commands
+To stop the stack:
 
 ```bash
-docker compose exec backend php artisan test          # uses sqlite :memory:, dev DB untouched
-docker compose exec backend php artisan migrate:fresh --seed
-docker compose exec backend php artisan tinker
-docker compose exec frontend npm install <package>
-docker compose exec db psql -U growhub growhub
-docker compose down        # stop
-docker compose down -v     # stop and wipe the database and node_modules volumes
+docker compose down
 ```
 
-### Browser tests (Playwright)
+## Running tests
 
-End-to-end tests live in `e2e/` and run on your machine (Node 20+) against the Docker stack.
+Backend tests:
+
+```bash
+docker compose exec backend php artisan test
+```
+
+End-to-end tests (Node 20+, with the Docker stack running):
 
 ```bash
 cd e2e
 npm install
-npx playwright install chromium   # first time only
-npm test                          # headless
-npm run test:ui                   # interactive UI mode
-npm run report                    # open the last HTML report (traces/videos of failures)
-npm run codegen                   # record a new test by clicking through the app
+npx playwright install chromium
+npm test
 ```
 
-- Logs in as the seeded admin (`1000000001`, password = NIP). If you changed that password
-  locally, run with `E2E_ADMIN_PASSWORD=<password> npm test`.
-- `first-login.spec.js` resets user `2023010017` to "must change password", reads the OTP
-  email from Mailpit's API, and resets the user again afterwards. Keep that account for tests only.
-- Tests run serially against the dev database. To start from clean seed data:
-  `docker compose exec backend php artisan migrate:fresh --seed`.
+## Mobile app
 
-### Mobile app against the Docker backend
+The mobile app runs outside Docker with the Flutter SDK. On the login screen, set the server URL to `http://10.0.2.2:8001/api` for the Android emulator or `http://127.0.0.1:8001/api` for the iOS simulator.
 
-The app's built-in defaults use port 8000; the Docker backend is on 8001. Set the server URL
-on the login screen to `http://10.0.2.2:8001/api` (Android emulator), `http://127.0.0.1:8001/api`
-(iOS simulator / desktop) or `http://<your-machine-LAN-IP>:8001/api` (physical device) —
-or start with `BACKEND_PORT=8000 docker compose up -d` to match the defaults.
+## Documentation
+
+- [API documentation](docs/API_DOCUMENTATION.md)
+- [System documentation](docs/SYSTEM_DOCUMENTATION.md)
+- [User guide (Markdown)](docs/PANDUAN_PENGGUNA.md)
+- [User guide (Word)](docs/Panduan_Pengguna_GrowHub.docx)
